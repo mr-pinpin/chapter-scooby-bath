@@ -1,84 +1,64 @@
-# Mr. PinPin Official
+# Scooby Gets a Bath — Chapter Reader
 
-The official published books and interactive atlas. This repository deploys
-verified releases; it is not where stories, illustrations, or application code
-are edited.
+Public site: https://mr-pinpin.github.io/chapter-scooby-bath/
+Authoring repository: https://github.com/mr-pinpin/mr-pinpin-source
+Public release bucket: https://huggingface.co/buckets/miguelemosreverte/mr-pinpin-archive
 
-**Read:** [Books](https://mr-pinpin.github.io/storyboard/library.html)
-| [Atlas](https://mr-pinpin.github.io/storyboard/atlas-webgpu.html)
-| [Original book](https://mr-pinpin.github.io/)
+Deployment-only repository: mr-pinpin/chapter-scooby-bath. Source, asset
+authoring, and build history remain in the authoring repository. No site binaries
+or source history belong in this repo.
 
-## Where to work
+Canonical local checkouts are siblings mr-pinpin-official and mr-pinpin-source
+under /Users/miguel_lemos/anastasia-pinpin-repos/. Former local names are symlink
+aliases; use canonical paths with the publishing tools. Old GitHub repository
+URLs redirect to the mr-pinpin organization, but old Pages URLs do not automatically
+redirect. Local directory names stay unchanged: mr-pinpin-official checks out
+mr-pinpin/mr-pinpin.github.io.
+A legacy source site may redeploy at /mr-pinpin-source/; it is not canonical.
+The public HF bucket name, historical evidence, and release manifests stay unchanged.
 
-| Location | Responsibility |
+| Location | Role |
 | --- | --- |
-| [mr-pinpin-source](https://github.com/mr-pinpin/mr-pinpin-source) | Edit stories, translations, application code, and artwork provenance. Build and test releases. |
-| This repository | Select and deploy a verified release. Keep it small: no artwork, video, or archive blobs in Git. |
-| [Public Hugging Face storage](https://huggingface.co/buckets/miguelemosreverte/mr-pinpin-archive) | Preserve originals, production assets, and content-addressed release bundles. |
+| mr-pinpin-source | Authoring, recipes, tests, provenance, preserved history |
+| mr-pinpin/chapter-scooby-bath | Scoped chapter deployment and immutable release records |
+| mr-pinpin-archive on HF | Verified original media, experiments, release archives |
 
-Start with the source repository's [publishing guide](https://github.com/mr-pinpin/mr-pinpin-source/blob/main/PUBLISHING.md).
-This repository is [mr-pinpin/mr-pinpin.github.io](https://github.com/mr-pinpin/mr-pinpin.github.io).
-Its local checkout remains `/Users/miguel_lemos/anastasia-pinpin-repos/mr-pinpin-official`,
-beside `mr-pinpin-source`; the organization move does not rename either directory.
+release.json selects a SHA-256-addressed releases/<sha>.json. The manifest records
+the source commit, exact archive identity, and every site file's bytes and SHA-256.
+CI downloads anonymously from the public Hugging Face bucket and verifies all of
+them before deploying. No HF secret is needed. Set Pages source to GitHub Actions.
+
+Run locally: python3 scripts/materialize.py --repo . --out NEW_OUTPUT_DIRECTORY
+The Python materializer uses only the standard library and never replaces an
+existing output. URLs and paths inside the built site are preserved unchanged.
+
+| Path | Purpose |
+| --- | --- |
+| release.json | Current release selector |
+| releases/<sha>.json | Immutable per-file manifest and source commit |
+| scripts/ | Anonymous download and verification, stdlib only |
+| .github/workflows/pages.yml | Verify, then deploy to the official site |
+
+To publish or roll back, use tools/publishing/publish.py in the authoring repo:
+stage --package PACKAGE --pages-repo THIS_REPO adds an immutable release record;
+select --pages-repo THIS_REPO --release SHA --expected-current OLD_SHA explicitly
+updates the selector. Review, commit, and push normally. Never force-push. Keep
+older release records and HF objects so rollback remains available. First-time
+template generation includes the initial selected manifest.
+
+HF buckets are mutable storage, not provider WORM. Hash keys, refusal to overwrite
+conflicting content, verified upload readback, and anonymous deployment checks
+enforce immutability at the application level. Never replace/delete release
+objects. External mutation causes verification failure, not silent deployment.
+The script does not create repositories, configure Pages, commit, push, cut over
+traffic, or redirect old Pages URLs. Operators manage those actions separately.
 
 ## Permissions
 
-Project-owned deployment software is MIT under [LICENSE](LICENSE) and
-[LICENSE-MIT](LICENSE-MIT). Deployed stories, illustrations, media, and other
-creative content are explicitly excluded, even when embedded in code or JSON.
-[Content permissions](CONTENT-LICENSE.md) allow personal/noncommercial family
-reading, downloading, and printing only for rights the project controls.
-[Third-party terms](THIRD-PARTY-NOTICES.md), prior grants, and legal exceptions
-remain intact; no copyright is invented in public-domain or unprotectable AI
-material. These repo notices do not modify an already published release archive.
-
-## Files you need
-
-| File | Purpose |
-| --- | --- |
-| `release.json` | Selects the release that the next deployment will publish. |
-| `releases/<sha>.json` | Immutable release record: source commit, archive identity, and every site file's checksum. Never edit or delete an existing record. |
-| `scripts/materialize.py` | Downloads and verifies the selected release into a new directory. |
-| `.github/workflows/pages.yml` | Verifies and deploys on a push to `main`, or an explicit workflow run. |
-| `AGENTS.md` | Safety rules for agents working here. |
-
-## Restore locally
-
-Requires Python 3.10 or newer; no external Python packages or HF token:
-
-```sh
-python3 scripts/materialize.py --repo . --out NEW_OUTPUT_DIRECTORY
-```
-
-Use a new output directory on a disk with space for the download and extracted
-site. The command refuses to replace existing output and checks every file.
-
-## Publish or roll back
-
-Build, package, upload, and verify from `mr-pinpin-source` using its
-[release CLI](https://github.com/mr-pinpin/mr-pinpin-source/tree/main/tools/publishing).
-Then, from that source checkout:
-
-```sh
-npm run release -- stage --package PACKAGE_DIRECTORY --pages-repo OFFICIAL_CHECKOUT
-npm run release -- select --pages-repo OFFICIAL_CHECKOUT \
-  --release NEW_RELEASE_SHA --expected-current CURRENT_RELEASE_SHA
-```
-
-Review the change, commit, and push normally in this repository. Wait for the
-deployment to succeed and check the public book and atlas. Rollback uses the same
-`select` command with a previous release SHA, followed by a new commit. Never
-force-push. Keep previous records and HF objects.
-
-CI downloads anonymously, verifies the archive and all files, and only then
-deploys. Readers receive assets from Pages, not HF. Bucket storage is mutable,
-not provider-enforced write-once retention; checksums detect altered bytes.
-
-## Previous names
-
-This repository was `mr-pinpin-pages`, then `mr-pinpin-official`, under
-`miguelemosreverte`; the source was `mr-pinpin-original`. Both now belong to
-the `mr-pinpin` organization.
-GitHub repository links redirect, but old Pages URLs do not automatically
-redirect. Use the official reader links above. Historical release records and
-their source commit IDs remain unchanged and valid.
+MIT covers only project-owned software under LICENSE and LICENSE-MIT.
+Deployed stories, media, prompts, and other creative content are excluded even
+when embedded in code. CONTENT-LICENSE.md gives limited personal/noncommercial
+family permissions only for rights the project controls. THIRD-PARTY-NOTICES.md
+preserves upstream terms; prior grants and legal exceptions remain unaffected.
+No copyright is invented in public-domain or unprotectable AI-generated material.
+These repo notices do not modify any existing immutable release archive.

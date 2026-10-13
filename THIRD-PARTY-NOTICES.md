@@ -35,7 +35,8 @@ This uncertainty does not itself establish that the existing deployment is
 unauthorized. Preserve the origin record; do not invent an upstream MIT grant.
 
 The complete original book export, including its styling, is excluded from the
-project software grant. Character-specific procedural artwork and geometry in
+project software grant: docs/original.html and docs/images/** (original.html and
+images/** in deployed archives). Character-specific procedural artwork and geometry in
 scripts/blender-pinpin/** are creative content; a Python extension does not
 automatically make them MIT software. That workflow also records an external
 implementation reference; any copied expression needs its own permission.
@@ -55,3 +56,12 @@ The source audit at tools/assets/licensing-audit.md records findings when
 available; it is evidence for review, not a grant of rights. Applicable upstream
 terms, valid prior grants, public-domain status, and legal exceptions prevail.
 See [CONTENT-LICENSE.md](CONTENT-LICENSE.md) for the limited family-use grant.
+
+## Fonts in new chapter PDF exports
+
+The Scooby R6 PDF export uses Liberation Serif font subsets under SIL OFL 1.1,
+with Google (2010) and Red Hat (2012) notices retained in
+[the font notice](https://mr-pinpin.github.io/permissions/LIBERATION-FONTS.txt).
+The font software keeps its upstream license and reserved-name conditions;
+this project's MIT grant does not relicense it. This addition travels with new
+reader releases; previously archived PDFs and notices are not rewritten.
